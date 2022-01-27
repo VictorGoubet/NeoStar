@@ -1,0 +1,14 @@
+body{
+    background: linear-gradient(to left top,#6496B9,#ABC6D9);
+    overflow:hidden;
+}
+
+header{
+    width:100%;
+    text-align:center;
+    padding:10px
+}
+.img_header{
+    width:60%;
+    margin:auto
+}
