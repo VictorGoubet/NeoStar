@@ -48,7 +48,7 @@ class Adder extends React.Component {
         <input type="text" id="Link" placeholder="Link" value={this.state.link} onChange={this.handleChange} className='link form-control'/>
       </div>
       
-      {["now", "succeed", "fail"].some(y => this.props.album_stack.map(x=>x.downloaded).includes(y))?(
+      {this.props.status !== 'not_launched'?(
         <button type="submit" className="btn btn-primary add_alb" disabled>Add</button>
       ):(
         <button type="submit" className="btn btn-primary add_alb">Add</button>
