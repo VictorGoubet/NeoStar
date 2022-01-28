@@ -21,10 +21,12 @@ api = Api(app)
 
 
 @app.route('/')
-def serve():
+@app.route('/index')
+def index():
+    print('hey')
     return send_from_directory(app.static_folder, 'index.html')
 
-@app.route("/download/<album_data>")
+@app.route("/download/<album_data>", methods=['POST'])
 def download(album_data):
     album_data = eval(album_data)
     res = {}
@@ -34,3 +36,5 @@ def download(album_data):
     time.sleep(5)
     return jsonify(res)
 
+if __name__ == '__main__':
+    app.run()
