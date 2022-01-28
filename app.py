@@ -31,7 +31,7 @@ def index():
 def download(album_data):
     album_data = eval(album_data)
     id = uuid.uuid4()
-    root = f'{os.path.dirname(os.path.abspath(__file__))}\\download\\{id}'
+    root = f'{os.path.dirname(os.path.abspath(__file__))}/download/{id}'
 
     res = {'id':id, 'data':{}}
     processes = []
@@ -57,7 +57,7 @@ def download(album_data):
 def reset(id):
     time.sleep(10)
     try:
-        path = f'{os.path.dirname(os.path.abspath(__file__))}\\download\\{id}.zip'
+        path = f'{os.path.dirname(os.path.abspath(__file__))}/download/{id}.zip'
         os.remove(path)
         res = {'status':True}
     except:
@@ -67,7 +67,7 @@ def reset(id):
 
 @app.route("/send_album/<id>")
 def send_album(id):
-    path = f'{os.path.dirname(os.path.abspath(__file__))}\\download\\{id}.zip'
+    path = f'{os.path.dirname(os.path.abspath(__file__))}/download/{id}.zip'
     return send_file(path, as_attachment=True)
 
 
