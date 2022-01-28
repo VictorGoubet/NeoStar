@@ -13,7 +13,6 @@ MODE = os.getenv("MODE")
 
 app = Flask(__name__, static_url_path='', static_folder='frontend/build')
 if MODE == 'dev':
-    print('hey')
     from flask_cors import CORS
     CORS(app)
     
@@ -23,7 +22,6 @@ api = Api(app)
 @app.route('/')
 @app.route('/index')
 def index():
-    print('hey')
     return send_from_directory(app.static_folder, 'index.html')
 
 @app.route("/download/<album_data>", methods=['POST'])
