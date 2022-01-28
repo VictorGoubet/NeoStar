@@ -37,7 +37,7 @@ def download(album_data):
     processes = []
     for x in album_data:
         
-        path = f'{root}\\{x["name"]}-{x["author"]}\\'
+        path = f'{root}/{x["name"]}-{x["author"]}/'
         command = f'youtube-dl@@-i@@-x@@--audio-format@@mp3@@--yes-playlist@@--no-check-certificate@@--audio-quality@@0@@--add-metadata@@-o@@{path}%(title)s.%(ext)s@@{parse.unquote(x["link"])}' 
 
         processes.append(subprocess.Popen(command.split('@@')))
