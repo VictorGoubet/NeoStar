@@ -24,7 +24,7 @@ api = Api(app)
 def index():
     return send_from_directory(app.static_folder, 'index.html')
 
-@app.route("/download/<album_data>", methods=['POST'])
+@app.route("/download/<album_data>")
 def download(album_data):
     album_data = eval(album_data)
     res = {}

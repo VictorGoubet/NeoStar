@@ -36,6 +36,7 @@ function AlbumStack({setalbum_stack, album_stack}) {
         else{
           url = "https://neostar.herokuapp.com"
         }
+        console.log(`${url}/download/${JSON.stringify(copy_as)}`)
         const data =  window.fetch(encodeURI(`${url}/download/${JSON.stringify(copy_as)}`));
         resolve(data);
       });
