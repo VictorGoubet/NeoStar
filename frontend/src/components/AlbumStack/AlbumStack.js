@@ -14,6 +14,11 @@ function AlbumStack({setalbum_stack, album_stack}) {
     setalbum_stack([])
   }
 
+
+  const get_dl = () =>{
+    reset_stack()
+  }
+
   const launch_dl = event =>{
     event.preventDefault();
 
@@ -22,11 +27,16 @@ function AlbumStack({setalbum_stack, album_stack}) {
 
       copy_as.forEach(x=>x.downloaded="now")
       setalbum_stack(copy_as)
-      console.log('alb stack')
-      console.log(album_stack)
       const promise = new Promise((resolve, _) => {
         copy_as.forEach(x=>{x.link = encodeURIComponent(x.link)})
-        const data =  window.fetch(encodeURI(`http://localhost:5000/download/${JSON.stringify(copy_as)}`));
+        let url
+        if(process.env.NODE_ENV === "development"){
+          url = "http://localhost:5000"
+        }
+        else{
+          url = "https://NeoStar.herokuapp.com"
+        }
+        const data =  window.fetch(encodeURI(`${url}/download/${JSON.stringify(copy_as)}`));
         resolve(data);
       });
 
@@ -62,7 +72,7 @@ function AlbumStack({setalbum_stack, album_stack}) {
             {x.downloaded === "no" ?(
               <button type="button" className="btn btn-secondary delbtn" onClick={del_album} id={x.link}>X</button>
            ): x.downloaded === "now" ?(
-            <div class="spinner-border delbtn" role="status"/>
+            <div className="spinner-border delbtn" role="status"/>
            ):x.downloaded === "succeed"?(
             <button type="button" className="btn btn-success delbtn" disabled>OK</button>
            ):(
@@ -91,7 +101,7 @@ function AlbumStack({setalbum_stack, album_stack}) {
           </div>
           ):(
             <div>
-              <button type="button" className="btn btn-primary">Download</button>  
+              <button type="button" className="btn btn-primary" onClick={get_dl}>Download</button>  
               <button type="button" className="btn btn-primary rst" onClick={reset_stack}>Reset</button>
             </div>
               

@@ -1,12 +1,21 @@
-from urllib import parse
-from flask_cors import CORS
-from flask_restful import Api
-from flask import Flask, jsonify
-
+import os
 import time
 
+from urllib import parse
+from flask_restful import Api
+from dotenv import load_dotenv
+from flask import Flask, jsonify
+
+
+
+load_dotenv()
+MODE = os.getenv("MODE")
+
 app = Flask(__name__, static_url_path='', static_folder='frontend/build')
-CORS(app)
+if MODE == 'dev':
+    from flask_cors import CORS
+    CORS(app)
+    
 api = Api(app)
 
 @app.route("/download/<album_data>")
