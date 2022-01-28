@@ -4,7 +4,7 @@ import time
 from urllib import parse
 from flask_restful import Api
 from dotenv import load_dotenv
-from flask import Flask, jsonify
+from flask import Flask, jsonify, send_from_directory
 
 
 
@@ -17,6 +17,12 @@ if MODE == 'dev':
     CORS(app)
     
 api = Api(app)
+
+
+
+@app.route("/", defaults={'path':''})
+def serve(path):
+    return send_from_directory(app.static_folder,'index.html')
 
 @app.route("/download/<album_data>")
 def download(album_data):
