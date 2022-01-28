@@ -27,3 +27,4 @@ def download(album_data):
         res[x['link']] = "succeed"
     time.sleep(5)
     return jsonify(res)
+

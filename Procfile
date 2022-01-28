@@ -1,1 +1,1 @@
-web: cd frontend && npm test
+web: gunicorn app:app
