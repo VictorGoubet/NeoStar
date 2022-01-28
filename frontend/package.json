@@ -17,7 +17,7 @@
     "start": "concurrently \"npm run server\" \"npm run front\"",
     "front": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "concurrently \"npm run server\" \"npm run front\"",
     "eject": "react-scripts eject",
     "server": "cd .. && flask run"
   },
