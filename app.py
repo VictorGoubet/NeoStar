@@ -4,9 +4,9 @@ import uuid
 import shutil
 import subprocess
 
-from urllib import parse
 from flask_restful import Api
 from dotenv import load_dotenv
+from flask_socketio import SocketIO, emit
 from flask import Flask, jsonify, send_from_directory, send_file
 
 
@@ -20,17 +20,26 @@ if MODE == 'dev':
     CORS(app)
     
 api = Api(app)
-
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode=None)
 
 @app.route('/')
 @app.route('/index')
 def index():
     return send_from_directory(app.static_folder, 'index.html')
 
-@app.route("/download/<album_data>")
+
+@socketio.on("connect", namespace='/')
+def connect():
+    print('New user on the socket')
+
+@socketio.on("disconnect", namespace='/')
+def connect():
+    print('User disconnected')
+
+@socketio.on("download")
 def download(album_data):
     album_data = eval(album_data)
-    id = uuid.uuid4()
+    id = str(uuid.uuid4())
     root = f'{os.path.dirname(os.path.abspath(__file__))}/download/{id}'
 
     res = {'id':id, 'data':{}}
@@ -38,7 +47,7 @@ def download(album_data):
     for x in album_data:
         
         path = f'{root}/{x["name"]}-{x["author"]}/'
-        command = f'youtube-dl@@-i@@-x@@--audio-format@@mp3@@--yes-playlist@@--no-check-certificate@@--audio-quality@@0@@--add-metadata@@-o@@{path}%(title)s.%(ext)s@@{parse.unquote(x["link"])}' 
+        command = f'youtube-dl@@-i@@-x@@--audio-format@@mp3@@--yes-playlist@@--no-check-certificate@@--audio-quality@@0@@--add-metadata@@-o@@{path}%(title)s.%(ext)s@@{x["link"]}' 
 
         processes.append(subprocess.Popen(command.split('@@')))
 
@@ -48,8 +57,8 @@ def download(album_data):
     
     shutil.make_archive(root, 'zip', root)
     shutil.rmtree(root, ignore_errors=True)
-        
-    return jsonify(res)
+    print(res)
+    emit('response_download', res)
 
 
 
@@ -72,4 +81,4 @@ def send_album(id):
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)

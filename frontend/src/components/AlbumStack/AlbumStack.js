@@ -1,11 +1,12 @@
 import './AlbumStack.css';
 import React from 'react';
 import { saveAs } from "file-saver";
-
+import io from "socket.io-client";
 
 class AlbumStack extends React.Component {
 
   state = {
+    socket:null,
     id : '',
     root:process.env.NODE_ENV === "development"?"http://localhost:5000":"https://neostar.herokuapp.com"
   }
@@ -29,35 +30,45 @@ class AlbumStack extends React.Component {
     event.preventDefault();
     saveAs(`${this.state.root}/send_album/${this.state.id}`, `Albums.zip`)
     this.reset_stack()
-    
-    
   };
 
   launch_dl = event =>{
     event.preventDefault();
+    
 
     if(this.props.album_stack.length > 0){
-      let copy_as = [...this.props.album_stack]
-      copy_as.forEach(x=>x.downloaded="now")
-      this.props.set_status('processing')
-      this.props.setalbum_stack(copy_as)
-      const promise = new Promise((resolve, _) => {
-        copy_as.forEach(x=>{x.link = encodeURIComponent(x.link)})
-        const data =  window.fetch(encodeURI(`${this.state.root}/download/${JSON.stringify(copy_as)}`));
-        resolve(data);
-      });
+      let prom = new Promise(resolve=>{
+        let s = io.connect(this.state.root)
+        resolve(s)
+      })
+      
+      prom.then(x=>{
+        this.setState({socket:x})
+        let copy_as = [...this.props.album_stack]
+        copy_as.forEach(x=>x.downloaded="now")
+        this.props.set_status('processing')
+        this.props.setalbum_stack(copy_as)
+        this.state.socket.emit("download", JSON.stringify(copy_as))
 
-      promise.then(res=>{
-        res.json().then(res =>{
-          let update_as = [...this.props.album_stack]
+      })
+      
+    }
+  }
+
+
+  componentDidUpdate = () => {
+    if(this.state.socket != null){
+      this.state.socket.on("response_download", (res) => {
+  
+        let update_as = [...this.props.album_stack]
           this.setState({'id':res.id})
           let st = 'all_fail'
           for (let link in res.data){
-
+  
             if (st === 'all_fail' && res.data[link] === 'succeed'){
               st = 'succeed'
             }
-
+  
             update_as.forEach(x => {
               if(x.link === link){
                 x.downloaded = res.data[link]
@@ -66,9 +77,9 @@ class AlbumStack extends React.Component {
           }
           this.props.set_status(st)
           this.props.setalbum_stack(update_as)
-        })
+          this.state.socket.disconnect()
       })
-      
+
     }
     
   }
