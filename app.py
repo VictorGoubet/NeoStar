@@ -20,7 +20,8 @@ if MODE == 'dev':
     CORS(app)
     
 api = Api(app)
-socketio = SocketIO(app, cors_allowed_origins="*", async_mode=None)
+
+socketio = SocketIO(app, cors_allowed_origins="*") if MODE == 'dev' else SocketIO(app)
 
 @app.route('/')
 @app.route('/index')
