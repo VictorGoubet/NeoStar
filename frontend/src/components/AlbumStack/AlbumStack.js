@@ -8,7 +8,7 @@ class AlbumStack extends React.Component {
   state = {
     socket:null,
     id : '',
-    root:process.env.NODE_ENV === "development"?"http://localhost:5000":"https://neostar.herokuapp.com:5000"
+    root:process.env.NODE_ENV === "development"?"http://localhost:5000":"https://neostar.herokuapp.com"
   }
 
   del_album = event => {
