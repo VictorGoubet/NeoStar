@@ -1,6 +1,6 @@
 venv/
 __pycache__/
-
+build_dev/
 
 # dependencies
 node_modules

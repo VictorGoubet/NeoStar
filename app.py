@@ -13,7 +13,6 @@ from flask import Flask, jsonify, send_from_directory, send_file
 load_dotenv()
 
 if os.getenv("MODE") == 'dev':
-    print('dev mode')
     app = Flask(__name__, static_url_path='', static_folder='frontend/build_dev')
     from flask_cors import CORS
     CORS(app)
