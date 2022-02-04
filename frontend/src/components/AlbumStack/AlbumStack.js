@@ -8,7 +8,7 @@ class AlbumStack extends React.Component {
   state = {
     socket:null,
     id : '',
-    root:process.env.NODE_ENV === "development"?"http://localhost:5000":"http://localhost:5000"
+    root:process.env.NODE_ENV === "development"?"http://localhost:5000":"https://neostar.herokuapp.com"
   }
 
   del_album = event => {
@@ -38,7 +38,7 @@ class AlbumStack extends React.Component {
 
     if(this.props.album_stack.length > 0){
       let prom = new Promise(resolve=>{
-        let s = io.connect(this.state.root)
+        let s = io(this.state.root)
         resolve(s)
       })
       
