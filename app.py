@@ -4,7 +4,6 @@ import uuid
 import shutil
 import subprocess
 
-from flask_restful import Api
 from dotenv import load_dotenv
 from flask_socketio import SocketIO, emit
 from flask import Flask, jsonify, send_from_directory, send_file
@@ -12,16 +11,17 @@ from flask import Flask, jsonify, send_from_directory, send_file
 
 
 load_dotenv()
-MODE = os.getenv("MODE")
 
-app = Flask(__name__, static_url_path='', static_folder='frontend/build')
-if MODE == 'dev':
+if os.getenv("MODE") == 'dev':
+    print('dev mode')
+    app = Flask(__name__, static_url_path='', static_folder='frontend/build_dev')
     from flask_cors import CORS
     CORS(app)
-    
-api = Api(app)
+    socketio = SocketIO(app, cors_allowed_origins="*")
+else:
+    app = Flask(__name__, static_url_path='', static_folder='frontend/build_prod')
+    socketio = SocketIO(app)
 
-socketio = SocketIO(app, cors_allowed_origins="*") if MODE == 'dev' else SocketIO(app)
 
 @app.route('/')
 @app.route('/index')
