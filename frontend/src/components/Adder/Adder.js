@@ -30,7 +30,10 @@ class Adder extends React.Component {
   }
 
   update = () => {
-    window.fetch(`${this.state.root}/update`)
+    let prom = window.fetch(`${this.state.root}/update`)
+    prom.then(x =>{
+      console.log(x)
+    })
   }
 
   exit = () => {
