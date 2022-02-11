@@ -84,4 +84,4 @@ def send_album(id):
 
 if __name__ == '__main__':
     #app.run(debug=True)
-    wsgi.server(eventlet.listen(('https://neostar.herokuapp.com', 5000)), app)
+    wsgi.server(eventlet.listen(('', 5000)), app)
