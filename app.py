@@ -2,8 +2,10 @@ import os
 import time
 import uuid
 import shutil
+import eventlet
 import subprocess
 
+from eventlet import wsgi
 from flask_cors import CORS
 from flask_socketio import SocketIO, emit
 from flask import Flask, jsonify, send_from_directory, send_file, request
@@ -98,4 +100,5 @@ def update():
     return str(res)
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    wsgi.server(eventlet.listen(('', 5000)), app)
+    
