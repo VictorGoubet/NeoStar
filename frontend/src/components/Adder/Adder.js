@@ -8,7 +8,8 @@ class Adder extends React.Component {
     name:"",
     author:"",
     link:"",
-    downloaded:"no"
+    downloaded:"no",
+    root:"http://localhost:5000"
   }
 
   add_album = (event) =>{
@@ -26,6 +27,14 @@ class Adder extends React.Component {
                     "link": x => this.setState({link:x}),
                     }
     change[event.target.className.split(" ")[0]](event.target.value)              
+  }
+
+  update = () => {
+    window.fetch(`${this.state.root}/update`)
+  }
+
+  exit = () => {
+    window.fetch(`${this.state.root}/shutdown`)
   }
 
   render(){
@@ -49,9 +58,20 @@ class Adder extends React.Component {
       </div>
       
       {this.props.status !== 'not_launched'?(
-        <button type="submit" className="btn btn-primary add_alb" disabled>Add</button>
+        <div>
+          <button type="submit" className="btn btn-primary add_alb" disabled>Add</button>
+          <button type="button" className="btn btn-primary add_alb" disabled>Update</button>
+          <button type="button" className="btn btn-primary add_alb" disabled>Exit</button>
+        </div>
+        
       ):(
-        <button type="submit" className="btn btn-primary add_alb">Add</button>
+        <div>
+          <button type="submit" className="btn btn-primary add_alb">Add</button>
+          <button type="button" className="btn btn-primary add_alb" onClick={this.update} >Update</button>
+          <button type="button" className="btn btn-primary add_alb" onClick={this.exit}>Exit</button>
+
+        </div>
+        
       )
     }
       

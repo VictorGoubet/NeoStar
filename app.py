@@ -4,22 +4,14 @@ import uuid
 import shutil
 import subprocess
 
-from dotenv import load_dotenv
+from flask_cors import CORS
 from flask_socketio import SocketIO, emit
-from flask import Flask, jsonify, send_from_directory, send_file
+from flask import Flask, jsonify, send_from_directory, send_file, request
 
 
-
-load_dotenv()
-
-if os.getenv("MODE") == 'dev':
-    app = Flask(__name__, static_url_path='', static_folder='frontend/build_dev')
-    from flask_cors import CORS
-    CORS(app)
-    socketio = SocketIO(app, cors_allowed_origins="*")
-else:
-    app = Flask(__name__, static_url_path='', static_folder='frontend/build_prod')
-    socketio = SocketIO(app)
+app = Flask(__name__, static_url_path='', static_folder='frontend/build')
+CORS(app)
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 
 @app.route('/')
@@ -79,6 +71,31 @@ def send_album(id):
     path = f'{os.path.dirname(os.path.abspath(__file__))}/download/{id}.zip'
     return send_file(path, as_attachment=True)
 
+
+def shutdown_server():
+    func = request.environ.get('werkzeug.server.shutdown')
+    if func is None:
+        raise RuntimeError('Not running with the Werkzeug Server')
+    func()
+
+@app.route('/shutdown')
+def shutdown():
+    shutdown_server()
+    return 'Server shutting down...'
+
+
+@app.route('/update')
+def update():
+    processes = []
+    for cmd in ['pip install --upgrade youtube-dl', 'python -m pip install --upgrade pip']:
+        processes.append(subprocess.Popen(cmd.split()))
+
+    res = True
+    for p in processes:
+        code = p.wait()
+        if not code:
+            res = False
+    return str(res)
 
 if __name__ == '__main__':
     app.run(debug=True)
