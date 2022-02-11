@@ -2,8 +2,10 @@ import os
 import time
 import uuid
 import shutil
+import eventlet
 import subprocess
 
+from eventlet import wsgi
 from dotenv import load_dotenv
 from flask_socketio import SocketIO, emit
 from flask import Flask, jsonify, send_from_directory, send_file
@@ -81,4 +83,5 @@ def send_album(id):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    #app.run(debug=True)
+    wsgi.server(eventlet.listen(('', 5000)), app)
